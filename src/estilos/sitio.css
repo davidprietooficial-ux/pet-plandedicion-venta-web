@@ -124,9 +124,14 @@ html {
  * checkout (cancela el padding de #precio Y el de .contenedor, borde a
  * borde de pantalla), md:mx-0 lo vuelve a su ancho normal, contenido
  * dentro de #precio, donde ya hay dos columnas.
+ *
+ * Ajustado a -spacing-md (2026-08-09, pedido explícito: "aumenta el
+ * margen horizontal"): ahora solo cancela el padding propio de #precio,
+ * no el de .contenedor — le queda el mismo aire lateral que el resto de
+ * la página en vez de ir borde a borde real de pantalla.
  */
 [data-oferta-tarjeta] {
-  margin-inline: calc(-1 * var(--spacing-xl));
+  margin-inline: calc(-1 * var(--spacing-md));
 }
 @media (min-width: 768px) {
   [data-oferta-tarjeta] {
@@ -484,7 +489,12 @@ html {
 }
 
 .boton-primario {
-  background: var(--accion);
+  /* Naranja vivo de marca, no --accion (pensado para texto sobre fondo
+     claro, más oscuro) — pedido explícito (2026-08-09): este botón debía
+     verse con el mismo naranja que el resto de la página (banner, ojo,
+     glow), no uno apagado. --accion-hover ya coincidía con
+     --color-primario-hover, así que el hover no necesitó cambio. */
+  background: var(--color-primario);
   color: var(--texto-sobre-accion);
   border: var(--borde-ancho) solid transparent;
   /* Más redondo que el resto del sistema (radius-md) — pedido explícito
@@ -518,15 +528,18 @@ html {
  * Prohibida la tarjeta dentro de tarjeta: un solo nivel de elevación
  * por región, o el ojo deja de saber qué es lo importante.
  * Vidrio — pedido explícito del cliente, intensificado 2026-08-09 (más
- * transparencia y más blur; se veía poco "glass" a secas). Una sola
- * declaración compartida con #precio (no una por selector): sigue
- * siendo un único tratamiento de borde a borde, no un efecto repetido a
- * mano en cada componente. Solo tiene sentido porque detrás ya no hay
- * un color plano: el fondo del body, el hero (video+degradé) o
- * .fondo-degradado siempre traen algo de qué desprenderse.
+ * transparencia y más blur; se veía poco "glass" a secas). Solo tiene
+ * sentido porque detrás ya no hay un color plano: el fondo del body, el
+ * hero (video+degradé) o .fondo-degradado siempre traen algo de qué
+ * desprenderse.
+ *
+ * #precio quedó afuera de este selector (2026-08-09, pedido explícito:
+ * "invisible"): aunque su fondo/borde ya son transparent (ver más
+ * arriba), el backdrop-filter seguía siendo una presencia visual propia
+ * — un halo desenfocado del video del hero recortado a su caja — y ese
+ * elemento no debe tener ninguna, ni siquiera esa.
  */
-.tarjeta,
-#precio {
+.tarjeta {
   backdrop-filter: blur(24px) saturate(150%);
   -webkit-backdrop-filter: blur(24px) saturate(150%);
 }
@@ -541,22 +554,6 @@ html {
   .tarjeta {
     padding: var(--tarjeta-padding-lg);
   }
-}
-
-/* ── Tarjeta de oferta — invisible, igual que #precio ───────────────────
- * Pedido explícito (2026-08-09): en la vista de una sola columna
- * (antes de lg:, cuando checkout y precio quedan apilados en vez de
- * lado a lado) el vidrio propio de .tarjeta se nota de más — un
- * recuadro suelto sobre el video, sin el fondo de #precio alrededor que
- * antes lo unificaba con el checkout. Mismo criterio que #precio: existe
- * para la estructura (padding, ancho), no debe tener presencia visual
- * propia. Selector de atributo después de .tarjeta en esta misma hoja
- * para ganar el empate de especificidad (mismo criterio que el
- * comentario de #precio, más arriba). */
-[data-oferta-tarjeta] {
-  background: transparent;
-  border-color: transparent;
-  box-shadow: none;
 }
 
 /* Solo las tarjetas que son clicables se elevan al pasar el ratón: si una
